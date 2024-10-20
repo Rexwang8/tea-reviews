@@ -531,6 +531,7 @@ def drawPie(ld: labelData, rating:Rating, review: dict):
     
     
     for k, v in flavorNotes.items():
+        print(f"Processing {k} with value {v}")
         key = k.title().strip()
         value = abs(v)
         matched = False
@@ -717,12 +718,31 @@ def drawTextOnReview(fullImg, review):
         steepNotes = "None"
     draw.text((1000, 275), f"Steeping Notes: {steepNotes}", fill="black", font=font)
     remark = review["remark"]
+    print(f"Remark: {remark}")
     # break into multiple lines if necessary
     if len(remark) > 50:
         #break at word
-        remark = remark.split(" ")
-        remark = [remark[i] + " " + remark[i+1] if i % 2 == 0 else remark[i] + "\n" for i in range(len(remark))]
-        remark = " ".join(remark)
+        remarkWords = remark.split(" ")
+        remarkLine1 = ""
+        remarkLine2 = ""
+        
+        breakpointSplit = 50
+        breakPointWord = 0
+        buff = ""
+        for i, word in enumerate(remarkWords):
+            if len(buff) + len(word) < breakpointSplit:
+                buff += word + " "
+            else:
+                breakPointWord = i
+                break
+        del buff
+        
+        for i, word in enumerate(remarkWords):
+            if i < breakPointWord:
+                remarkLine1 += word + " "
+            else:
+                remarkLine2 += word + " "
+        remark = remarkLine1 + "\n" + remarkLine2
     draw.text((1000, 350), f"Remark: {remark}", fill="black", font=font)
 
     # Get numbers and variables
@@ -945,12 +965,14 @@ print(f"This is a tea of type... {review['type']}")
 print(f"Size of total image is: {fullImg.size} pixels, size of the chart is: {imgbars.size} pixels")
 
 # Display the chart
-fullImg.show() # Display the image
+if openGraphOnCreation:
+    # Open with OS default image viewer
+    fullImg.show()
 
 # Save the image
 graphPath = f"{FolderGraphs}/{review['vendorLong'].replace(' ', '_')}"
 MakeFilePath(graphPath)
-graphPath = f"{graphPath}/{review['title'].replace(' ', '_')}"
+graphPath = f"{graphPath}/{review['year']}_{review['title'].replace(' ', '_')}"
 MakeFilePath(graphPath)
 graphPath = f"{graphPath}/{review['year']}_{review['date'].replace('/','_')}_Attempt_{review['Attempts']}.png"
 fullImg.save(graphPath)
