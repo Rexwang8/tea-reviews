@@ -7,7 +7,7 @@ openGraphOnCreation = True
 
 A4PaperSizeWidthPx = 2550
 A4PaperSizeHeightPx = 3300
-Version = "v3.3.3"
+Version = "v3.3.5"
 
 FolderData = "./data"
 FolderJson = "./data/json"
@@ -27,7 +27,9 @@ class VendorsEnum(Enum):
     YeeonTeaCo = 8
     TheSteepingRoom = 9
     TeaHong = 10
-    Unknown = 11
+    FarmerLeaf = 11
+    Taobao = 12
+    Unknown = 13
     
 def VendorToEnum(vendor):
     return VendorsEnum[vendor]
@@ -52,6 +54,10 @@ def VendorEnumToString(vendor):
         return "The Steeping Room"
     elif vendor == VendorsEnum.TeaHong:
         return "Tea Hong"
+    elif vendor == VendorsEnum.FarmerLeaf:
+        return "Farmer Leaf"
+    elif vendor == VendorsEnum.Taobao:
+        return "Taobao"
     else:
         return "Unknown Vendor"
 
@@ -83,6 +89,8 @@ def TeaTypeToEnum(teaType):
     teaType = teaType.strip().title()
     if teaType == "Raw":
         return TeaTypeEnum.Sheng
+    elif teaType == "Ripe":
+        return TeaTypeEnum.Shou
     try:
         return TeaTypeEnum[teaType]
     except:
@@ -161,6 +169,10 @@ def vendorShortToLong(vendorShort):
         return "Yeeon Tea Co"
     elif vendorShort == "TH":
         return "Tea Hong"
+    elif vendorShort == "FL":
+        return "Farmer Leaf"
+    elif vendorShort == "TB":
+        return "Taobao"
     else:
         return "Unknown Vendor"
 def typeToTypeMap(teaType):

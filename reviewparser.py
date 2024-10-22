@@ -243,32 +243,42 @@ def parseReview(reviewString, format):
     # Graph Scores
     #GraphScores: Stamina: 5, Intensity: 5, Occasionality: 5, Rebuy: True, Attempts: 3, Overall: 5, Cost: 0.10, Emojis: [one.png|two.png|three.png]
     if GraphScores not in ['']:
+        print(f"Parsing Graph Scores...")
         GraphScores = GraphScores.replace("GraphScores: ", "")
         GraphScoresParts = GraphScores.split(", ")
         for part in GraphScoresParts:
             key, value = part.split(": ")
+            print(f"Key: {key} Value: {value}")
             if key == "Rebuy":
                 results[key] = value.lower() == "true"
+                print(f"Added Rebuy: {results[key]}")
             elif key == "Cost":
                 results["CostPerGram"] = float(value)
+                print(f"Added Cost: {results['CostPerGram']}")
             elif key == "Emojis":
-                results["emojis"] = value.split("|")
+                results["emojis"] = value.replace("[", "").replace("]", "").split("|")
+                print(f"Added Emojis: {results['emojis']}")
+            elif key == "Attempts":
+                results[key] = int(value)
+                print(f"Added {key}: {results[key]}")
             else:
-                results[key + "Score"] = float(value)
+                results[key] = float(value)
+                print(f"Added {key} Score: {results[key]}")
     
     
     return results
     
     
 reviewString = '''
-10/05/2024 TH 2014 Bingdao raw
+10/12/2024 TB 2023 Mojun YiHao Fuzhuan
 Params: 8.2
-Water, Vessel: 99c 90tds zerowater mix, bamboo charcoal, 175mL Pumpkin
-Time: 20, 30, 45, 90, 150, 300, 600, (end)
-Notes: pronounced wood, resin, pronounced mahogany, pine smoke, grape, vinefruit, chrysanthemum, floral, herbal, umami, coating, mouth, powdery, heating, body
-Attributes: moderate storage, powdery, medium viscosity, mild astringency, medium-short aftertaste, mild sweetness
-Steeping Notes: experimental sesh - western sheng
-Remark: similar to gongfu, very hardwood and resin profile, good stuff
+Water, Vessel: 99c 90tds zerowater mix, bamboo charcoal, 175mL Big Blue Pot
+Time: 240, 600, 1800, (end)
+Notes: pronounced autumn leaves, pronounced forest, pronounced sticks, hay, juicy, sweet, pronounced malt, earth, dirt
+Attributes: light bitterness, moderate sweetness, light storage, light astringency, light aftertaste, medium-thin viscosity
+GraphScores: StaminaScore: 6.5, IntensityScore: 4.5, OccasionalityScore: 3, Rebuy: True, Attempts: 2, OverallScore: 4.5, Cost: 0.09, Emojis: [fallen_leaf.png|hay.png|beer.png]
+Steeping Notes:
+Remark: pretty similar profile to A1, but not too weak 
 '''.strip()
 reviewJson = ""
 try:
@@ -277,20 +287,22 @@ except:
     reviewJson = parseReview(reviewString, "short")
     
 # New review bonus info
-reviewJson['CostPerGram'] = 0.23 # Cost per gram of tea
-reviewJson['StaminaScore'] = 8 # How long the tea lasts relative to others of the same type
-reviewJson['IntensityScore'] = 6 # How strong the tea is relative to others of all types
-reviewJson['OccasionalityScore'] = 5 # How often you would drink this tea / How special it is
-reviewJson['OverallScore'] = 8 # Overall score, Aim for 5 as average
-reviewJson['Rebuy'] = True # Would you consider buying this tea again once you run out?
-reviewJson['Attempts'] = 2 # How many times you've tried this tea so far
 reviewJson['RawReview'] = reviewString
-reviewJson['emojis'] = [
-    "evergreen_tree.png",
-    "dust.png",
-    "christmas_tree.png",
-]
+'''
+reviewJson['CostPerGram'] = 0.09 # Cost per gram of tea
+reviewJson['StaminaScore'] = 7 # How long the tea lasts relative to others of the same type
+reviewJson['IntensityScore'] = 3 # How strong the tea is relative to others of all types
+reviewJson['OccasionalityScore'] = 3 # How often you would drink this tea / How special it is
+reviewJson['OverallScore'] = 4.5 # Overall score, Aim for 5 as average
+reviewJson['Rebuy'] = True # Would you consider buying this tea again once you run out?
+reviewJson['Attempts'] = 1 # How many times you've tried this tea so far
 
+reviewJson['emojis'] = [
+    "fallen_leaf.png",
+    "hay.png",
+    "beer.png",
+]
+'''
 
 print(f"Scores: \n\nCostPerGram: {reviewJson['CostPerGram']}\nStaminaScore: {reviewJson['StaminaScore']}\nIntensityScore: {reviewJson['IntensityScore']}\nOccasionalityScore: {reviewJson['OccasionalityScore']}\nOverallScore: {reviewJson['OverallScore']}\nRebuy: {reviewJson['Rebuy']}\nAttempts: {reviewJson['Attempts']}\nemojis: {reviewJson['emojis']}")
 print(f"\n----------------------")

@@ -167,10 +167,11 @@ class labelData:
                 "Metallic": (-1, 1),
                 "Petrichor": (-1, 1),
                 }),
-            "Earth": (-1, 3, {
+            "Earth": (-1, 4, {
                 "Dirt": (-1, 1),
                 "Dust": (-1, 1),
                 "Old Books": (-1, 1),
+                "Mushroom": (-1, 1),
                 }),
             "Forest": (-1, 4, {
                 "Fresh Leaves": (-1, 1),
@@ -459,7 +460,7 @@ def defineRatings():
 
     # Low Notes
     rating.AddMixedT2T3([[-1], [0,0]]) #Mineral -  'Metallic', 'Petrichor',
-    rating.AddMixedT2T3([[-1], [0,0, 0]]) #Earth - 'Dirt', 'Dust', 'Old Books',
+    rating.AddMixedT2T3([[-1], [0,0,0,0]]) #Earth - 'Dirt', 'Dust', 'Old Books', 'Mushroom',
     rating.AddMixedT2T3([[-1], [0,0,0,0]]) #Forest - 'Fresh Leaves', 'Autumn Leaves', 'Moss', 'Sticks',
     rating.AddMixedT2T3([[-1], [0,0,0,0, 0]]) #Wood - 'Pine', 'Mahogony, Resin', 'Cedar', 'Incense',
     rating.AddMixedT2T3([[-1], [0,0,0,0,0,0]]) #Fire - 'Ash', 'Charcoal', 'Pine Smoke', 'Pipe Smoke', 'Barbeque', 'Tobacco',
@@ -718,7 +719,7 @@ def drawTextOnReview(fullImg, review):
         steepNotes = "None"
     draw.text((1000, 275), f"Steeping Notes: {steepNotes}", fill="black", font=font)
     remark = review["remark"]
-    print(f"Remark: {remark}")
+    print(f"{remark}")
     # break into multiple lines if necessary
     if len(remark) > 50:
         #break at word
@@ -743,7 +744,7 @@ def drawTextOnReview(fullImg, review):
             else:
                 remarkLine2 += word + " "
         remark = remarkLine1 + "\n" + remarkLine2
-    draw.text((1000, 350), f"Remark: {remark}", fill="black", font=font)
+    draw.text((1000, 350), f"{remark}", fill="black", font=font)
 
     # Get numbers and variables
     year = getKeyFromDict(review, "year")
