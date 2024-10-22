@@ -5,7 +5,7 @@ Not really intended for public use, but feel free to use it if you want. I'm not
 
 Feel free to ask me questions about the code or how to use it. I'm happy to help.
 
-Version: 3.2.1
+Version: 3.3.5
 
 
 ## Usage
@@ -21,72 +21,69 @@ Version: 3.2.1
 
 ## Examples
 
-Current Review Format (Long)
+Current Review Format
 
 ```
-09/19/2024 TWL BYH 2015 LSGC Sheng
-Params: 10
-Water, Vessel: 90tds zerowater mix, bamboo charcoal, 99C, 130mL NZWH ShuiPing
----
-Dry: cherry, yesheng hongcha
-Steamed: pronounced cherry, pronounced fruit, slight stonefruit
-Wet: slight tart, slight cherry, slight stonefruit, slight tobacco
-Time: 15, 20, 25, 35, 60, 120, 300, 600, (end)
-Notes: slight cherry, pronounced rock sugar, slight wood, slight fruit, slight camphor, slight citrus, slight grapefruit, slight pine, light powdery
-Attributes: mild bitterness, moderate sweetness, pronounced aftertaste, moderate storage, medium viscosity, slight heating
-Qi? N
----
-Archetype: Yang camphor, grapefruit pithy, 
-Steeping Notes: steep harder, drop 25s steep
-Remark: banger as always, fruity, woody and sweet
+10/12/2024 TB 2023 Mojun YiHao Fuzhuan
+Params: 8.2
+Water, Vessel: 99c 90tds zerowater mix, bamboo charcoal, 175mL Big Blue Pot
+Time: 240, 600, 1800, (end)
+Notes: pronounced autumn leaves, pronounced forest, pronounced sticks, hay, juicy, sweet, pronounced malt, earth, dirt
+Attributes: light bitterness, moderate sweetness, light storage, light astringency, light aftertaste, medium-thin viscosity
+GraphScores: StaminaScore: 6.5, IntensityScore: 4.5, OccasionalityScore: 3, Rebuy: True, Attempts: 2, OverallScore: 4.5, Cost: 0.09, Emojis: [fallen_leaf.png|hay.png|beer.png]
+Steeping Notes:
+Remark: pretty similar profile to A1, but not too weak
 ```
 
 Current Data generated from review
 ```
 {
-    "date": "09/19/2024",
-    "vendorShort": "TWL",
-    "vendorLong": "Teas We Like",
-    "title": "2015 LSGC",
-    "year": "BYH",
-    "type": "Sheng",
-    "params": "10",
-    "waterVessel": "130mL NZWH ShuiPing",
-    "waterVesselVolume": "130",
-    "steepCount": 8,
+    "date": "10/12/2024",
+    "vendorShort": "TB",
+    "vendorLong": "Taobao",
+    "title": "Mojun YiHao",
+    "year": "2023",
+    "type": "Fuzhuan",
+    "params": "8.2",
+    "waterVessel": "175mL Big Blue Pot",
+    "waterVesselVolume": "175",
+    "steepCount": 3,
     "flavorNotes": {
-        "cherry": -1,
-        "rock sugar": -2,
-        "wood": -1,
-        "fruit": -1,
-        "camphor": -1,
-        "citrus": -1,
-        "grapefruit": -1,
-        "pine": -1,
-        "powdery": -1,
-        "heating": -1
+        "autumn leaves": -2,
+        "forest": -2,
+        "sticks": -2,
+        "hay": -1,
+        "juicy": -1,
+        "sweet": -1,
+        "malt": -2,
+        "earth": -1,
+        "dirt": -1
     },
     "attributeNotes": {
-        "bitter": 2,
+        "bitter": 1,
         "sweetness": 3,
-        "aftertaste": 4,
-        "storage": 3,
-        "viscosity": 4
+        "storage": 1,
+        "astringency": 1,
+        "aftertaste": 1,
+        "viscosity": 3
     },
-    "steepNotes": " steep harder, drop 25s steep",
-    "remark": "banger as always, fruity, woody and sweet",
-    "CostPerGram": 0.63,
-    "StaminaScore": 6,
-    "IntensityScore": 5,
-    "OccasionalityScore": 8.5,
-    "OverallScore": 8.5,
+    "steepNotes": "",
+    "remark": "pretty similar profile to A1, but not too weak",
+    "StaminaScore": 6.5,
+    "IntensityScore": 4.5,
+    "OccasionalityScore": 3.0,
     "Rebuy": true,
     "Attempts": 2,
-    "RawReview": "09/19/2024 TWL BYH 2015 LSGC Sheng\nParams: 10\nWater, Vessel: 90tds zerowater mix, bamboo charcoal, 99C, 130mL NZWH ShuiPing\n---\nDry: cherry, yesheng hongcha\nSteamed: pronounced cherry, pronounced fruit, slight stonefruit\nWet: slight tart, slight cherry, slight stonefruit, slight tobacco\nTime: 15, 20, 25, 35, 60, 120, 300, 600, (end)\nNotes: slight cherry, pronounced rock sugar, slight wood, slight fruit, slight camphor, slight citrus, slight grapefruit, slight pine, light powdery\nAttributes: mild bitterness, moderate sweetness, pronounced aftertaste, moderate storage, medium viscosity, slight heating\nQi? N\n---\nArchetype: Yang camphor, grapefruit pithy, \nSteeping Notes: steep harder, drop 25s steep\nRemark: banger as always, fruity, woody and sweet",
+    "OverallScore": 4.5,
+    "CostPerGram": 0.09,
     "emojis": [
-        "cherries.png",
-        "christmas_tree.png",
-        "don1.png"
-    ]
+        "fallen_leaf.png",
+        "hay.png",
+        "beer.png"
+    ],
+    "RawReview": "10/12/2024 TB 2023 Mojun YiHao Fuzhuan\nParams: 8.2\nWater, Vessel: 99c 90tds zerowater mix, bamboo charcoal, 175mL Big Blue Pot\nTime: 240, 600, 1800, (end)\nNotes: pronounced autumn leaves, pronounced forest, pronounced sticks, hay, juicy, sweet, pronounced malt, earth, dirt\nAttributes: light bitterness, moderate sweetness, light storage, light astringency, light aftertaste, medium-thin viscosity\nGraphScores: StaminaScore: 6.5, IntensityScore: 4.5, OccasionalityScore: 3, Rebuy: True, Attempts: 2, OverallScore: 4.5, Cost: 0.09, Emojis: [fallen_leaf.png|hay.png|beer.png]\nSteeping Notes:\nRemark: pretty similar profile to A1, but not too weak"
 }
 ```
+
+Graph generated
+![Graph](LatestGraph.png)
