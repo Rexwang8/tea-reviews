@@ -4,10 +4,11 @@ import json
 import os
 
 openGraphOnCreation = True
+useRichOutputColors = True # pip install rich to use this
 
 A4PaperSizeWidthPx = 2550
 A4PaperSizeHeightPx = 3300
-Version = "v3.3.5"
+Version = "v3.3.6"
 
 FolderData = "./data"
 FolderJson = "./data/json"
@@ -208,18 +209,18 @@ def MakeFilePath(path):
     # Make sure the folder exists
     if not os.path.exists(path):
         os.makedirs(path)
-        print(f"Made {path} folder")
+        RichPrintSuccess(f"Made {path} folder")
     else:
-        print(f"{path} folder already exists")
+        RichPrintWarning(f"{path} folder already exists")
         
 def WriteFile(path, content):
     with open(path, "w") as file:
         file.write(content)
-    print(f"Written {path} to file")
+    RichPrintSuccess(f"Written {path} to file")
     
 def ReadFile(path):
     with open(path, "r") as file:
-        print(f"Read {path} from file")
+        RichPrintSuccess(f"Read {path} from file")
         return file.read()
 
 def ListFiles(path):
@@ -228,10 +229,36 @@ def ListFiles(path):
 def WriteJson(path, data):
     with open(path, "w") as file:
         json.dump(data, file)
-    print(f"Written {path} to file")
+    RichPrintSuccess(f"Written {path} to file")
 
 def ReadJson(path):
     with open(path, "r") as file:
-        print(f"Read {path} from file")
+        RichPrintSuccess(f"Read {path} from file")
         return json.load(file)
     
+    
+# Rich output
+richPrintConsole = None
+if useRichOutputColors:
+    from rich.console import Console as RichConsole
+    richPrintConsole = RichConsole()
+# Rich color output
+def RichPrint(text, color):
+    if useRichOutputColors:
+        richPrintConsole.print(text, style=color)
+    else:
+        print(text)
+
+def RichPrintError(text):
+    RichPrint(text, "bold red")
+def RichPrintInfo(text):
+    RichPrint(text, "bold blue")
+def RichPrintSuccess(text):
+    RichPrint(text, "bold green")
+def RichPrintWarning(text):
+    RichPrint(text, "bold yellow")
+def RichPrintSeparator():
+    RichPrint("--------------------------------------------------", "bold white")
+    
+def EarlyExit():
+    exit()

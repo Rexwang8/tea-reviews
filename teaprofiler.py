@@ -488,9 +488,9 @@ def defineRatings():
     rating.Flatten()
  
     if len(rating.GetT3()) != ld.getNumT3():
-        print("Error: Rating and LabelData T3 sizes do not match")
-        print(f"The number of T3 ratings is {len(rating.GetT3())} and the number of T3 labels is {ld.getNumT3()}")
-        pass
+        RichPrintError("Error: Rating and LabelData T3 sizes do not match")
+        RichPrintError(f"The number of T3 ratings is {len(rating.GetT3())} and the number of T3 labels is {ld.getNumT3()}")
+        EarlyExit()
     return ld, rating
 
 def TryGetFromDict(d, key):
@@ -532,7 +532,7 @@ def drawPie(ld: labelData, rating:Rating, review: dict):
     
     
     for k, v in flavorNotes.items():
-        print(f"Processing {k} with value {v}")
+        RichPrintInfo(f"Processing {k} with value {v}")
         key = k.title().strip()
         value = abs(v)
         matched = False
@@ -543,7 +543,7 @@ def drawPie(ld: labelData, rating:Rating, review: dict):
                 newValue = value
                 pairedDataT1[i] = (oldKey, newValue)
                 matched = True
-                print(f"Matched {key} to {value} in T1")
+                RichPrintInfo(f"Matched {key} to {value} in T1")
         # T2
         if not matched:
             for i in range(len(pairedDataT2)):
@@ -552,7 +552,7 @@ def drawPie(ld: labelData, rating:Rating, review: dict):
                     newValue = value
                     pairedDataT2[i] = (oldKey, newValue)
                     matched = True
-                    print(f"Matched {key} to {value} in T2")
+                    RichPrintInfo(f"Matched {key} to {value} in T2")
         # T3
         if not matched:
             for i in range(len(pairedDataT3)):
@@ -561,11 +561,11 @@ def drawPie(ld: labelData, rating:Rating, review: dict):
                     newValue = value
                     pairedDataT3[i] = (oldKey, newValue)
                     matched = True
-                    print(f"Matched {key} to {value} in T3")
+                    RichPrintInfo(f"Matched {key} to {value} in T3")
         
         # If not matched, print out the key
         if not matched:
-            print(f"Key {key} not found in any of the lists")
+            RichPrintError(f"Key {key} not found in any of the lists")
     
     # Handles Attributes seperately
     # 1, 2 is mild, 3, 4 is pronounced, 5, 6 is heavy
@@ -574,43 +574,43 @@ def drawPie(ld: labelData, rating:Rating, review: dict):
         pairedDataT3[idx] = val
         idx2 = [i for i, n in enumerate(pairedDataT2) if n[0] == "Bitterness"][0]
         pairedDataT2[idx2] = (pairedDataT2[idx2][0], 1)
-        print(f"Matched bitterness to {val}")
+        RichPrintInfo(f"Matched bitterness to {val}")
     idx, val = ParseAttribute(pairedDataT3, TryGetFromDict(attributeNotes, "sweetness"), ["Mild", "Pronounced", "Strong"], 1)
     if idx != None and val != None:
         pairedDataT3[idx] = val
         idx2 = [i for i, n in enumerate(pairedDataT2) if n[0] == "Sweetness"][0]
         pairedDataT2[idx2] = (pairedDataT2[idx2][0], 1)
-        print(f"Matched sweetness to {val}")
+        RichPrintInfo(f"Matched sweetness to {val}")
     idx, val = ParseAttribute(pairedDataT3, TryGetFromDict(attributeNotes, "viscosity"), ["Light", "Medium", "Heavy"], 0)
     if idx != None and val != None:
         pairedDataT3[idx] = val
         idx2 = [i for i, n in enumerate(pairedDataT2) if n[0] == "Viscosity"][0]
         pairedDataT2[idx2] = (pairedDataT2[idx2][0], 1)
-        print(f"Matched viscosity to {val}")
+        RichPrintInfo(f"Matched viscosity to {val}")
     idx, val = ParseAttribute(pairedDataT3, TryGetFromDict(attributeNotes, "astringency"), ["Light", "Medium", "Heavy"], 1)
     if idx != None and val != None:
         pairedDataT3[idx] = val
         idx2 = [i for i, n in enumerate(pairedDataT2) if n[0] == "Astringency"][0]
         pairedDataT2[idx2] = (pairedDataT2[idx2][0], 1)
-        print(f"Matched astringency to {val}")
+        RichPrintInfo(f"Matched astringency to {val}")
     idx, val = ParseAttribute(pairedDataT3, TryGetFromDict(attributeNotes, "aftertaste"), ["Short", "Long"], 0)
     if idx != None and val != None:
         pairedDataT3[idx] = val
         idx2 = [i for i, n in enumerate(pairedDataT2) if n[0] == "Aftertaste"][0]
         pairedDataT2[idx2] = (pairedDataT2[idx2][0], 1)
-        print(f"Matched aftertaste to {val}")
+        RichPrintInfo(f"Matched aftertaste to {val}")
     idx, val = ParseAttribute(pairedDataT3, TryGetFromDict(attributeNotes, "storage"), ["Light", "Medium", "Heavy"], 2)
     if idx != None and val != None:
         pairedDataT3[idx] = val
         idx2 = [i for i, n in enumerate(pairedDataT2) if n[0] == "Storage"][0]
         pairedDataT2[idx2] = (pairedDataT2[idx2][0], 1)
-        print(f"Matched storage to {val}")
+        RichPrintInfo(f"Matched storage to {val}")
     idx, val = ParseAttribute(pairedDataT3, TryGetFromDict(attributeNotes, "roast"), ["Light", "Medium", "Heavy"], 3)
     if idx != None and val != None:
         pairedDataT3[idx] = val
         idx2 = [i for i, n in enumerate(pairedDataT2) if n[0] == "Roasting"][0]
         pairedDataT2[idx2] = (pairedDataT2[idx2][0], 1)
-        print(f"Matched roast to {val}")
+        RichPrintInfo(f"Matched roast to {val}")
     
     
         
@@ -663,7 +663,7 @@ def drawPie(ld: labelData, rating:Rating, review: dict):
         if angle > 90 and angle < 270:
             angle += 180
         l.set_rotation(angle)
-    print("Finished drawing pie")
+    RichPrintSuccess("Finished drawing pie")
     return fig
 
 # Convert to PIL image
@@ -719,7 +719,7 @@ def drawTextOnReview(fullImg, review):
         steepNotes = "None"
     draw.text((1000, 275), f"Steeping Notes: {steepNotes}", fill="black", font=font)
     remark = review["remark"]
-    print(f"{remark}")
+    RichPrintInfo(f"{remark}")
     # break into multiple lines if necessary
     if len(remark) > 50:
         #break at word
@@ -794,7 +794,8 @@ def drawTextOnReview(fullImg, review):
         emojiImg = emojiImg.resize((100, 100), PIL.Image.ANTIALIAS)
         fullImg.paste(emojiImg, (2250, 2475), emojiImg)
     except:
-        print(f"Could not find emoji {emojiPath}")
+        RichPrintError(f"Could not find emoji {emojiPath}")
+        EarlyExit()
     
     # Emoji Summary
     draw.text((100, 2300), f"Emojis: ", fill="black", font=font)
@@ -809,7 +810,8 @@ def drawTextOnReview(fullImg, review):
                 emojiImg = emojiImg.resize((160, 160), PIL.Image.ANTIALIAS)
             fullImg.paste(emojiImg, (160 + 160 * i, 2400), emojiImg)
         except:
-            print(f"Could not find emoji {emojiPath}")
+            RichPrintError(f"Could not find emoji {emojiPath}")
+            EarlyExit()
             
     # Draw central emoji
     score = getKeyFromDict(review, "OverallScore")
@@ -837,7 +839,8 @@ def drawTextOnReview(fullImg, review):
         y = int((A4PaperSizeHeightPx/2) - 165)
         fullImg.paste(emojiImg, (x, y), emojiImg)
     except:
-        print(f"Could not find emoji {emojiPath}")
+        RichPrintError(f"Could not find emoji {emojiPath}")
+        EarlyExit()
     
         
         
@@ -949,7 +952,6 @@ def getReviewFromPathRelative(path):
 rpath = r'data\json\White2Tea\Qilan\2024_09_17_2024_Attempt_1.json'
 #review = getReviewFromPathRelative(rpath)
 review = getRecentReview()
-#print(review)
 
 ld, rating = defineRatings()
 img = fig2img(drawPie(ld, rating, review))
@@ -962,8 +964,8 @@ imgbars = imgbars.resize((A4PaperSizeWidthPx, 550), PIL.Image.ANTIALIAS)
 # Paste the img
 fullImg.paste(imgbars, (-15, A4PaperSizeWidthPx+100))
 
-print(f"This is a tea of type... {review['type']}")
-print(f"Size of total image is: {fullImg.size} pixels, size of the chart is: {imgbars.size} pixels")
+RichPrintInfo(f"This is a tea of type... {review['type']}")
+RichPrintInfo(f"Size of total image is: {fullImg.size} pixels, size of the chart is: {imgbars.size} pixels")
 
 # Display the chart
 if openGraphOnCreation:
@@ -979,4 +981,4 @@ graphPath = f"{graphPath}/{review['year']}_{review['date'].replace('/','_')}_Att
 fullImg.save(graphPath)
 fullImg.save(f"{FolderGraphs}/LatestGraph.png")
 
-print(f"Success: \n\nSaved image to {graphPath}")
+RichPrintSuccess(f"Success: \n\nSaved image to {graphPath}")

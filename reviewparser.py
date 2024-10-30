@@ -14,6 +14,7 @@ from helpers import *
 # Convert the word part to a strength value
 # Positive values are for attributes, negative values are for flavors
 # Attributes are (0-6), flavors are (0- -2)
+wordsStrNone = ["None", "none", "n/a", "nil", "null", "zero", "0"]
 wordsStr1 = ["slightly", "slight", "hint", "hint of", "light", "watery"]
 wordsStr2 = ["mild", "thin", "short"]
 wordsStr3 = ["moderate", "medium-thin", "medium-short"]
@@ -24,6 +25,8 @@ wordsStr123 = wordsStr1 + wordsStr2 + wordsStr3
 wordsStr456 = wordsStr4 + wordsStr5 + wordsStr6
 
 def WordPartToStrength(wordPart, isAttribute):
+    if wordPart in wordsStrNone:
+        return 0
     
     if isAttribute:
         if wordPart in wordsStr1:
@@ -42,7 +45,7 @@ def WordPartToStrength(wordPart, isAttribute):
             # if number, return num
             if wordPart.isdigit():
                 return int(wordPart)
-            print(f"Unknown attribute word part: {wordPart}")
+            RichPrintError(f"Unknown attribute word part: {wordPart}")
             return -8
     else:
         if wordPart.isdigit():
@@ -53,10 +56,11 @@ def WordPartToStrength(wordPart, isAttribute):
             return -2
         else:
             if len(wordPart) > 0:
-                print(f"Unknown flavor word part: {wordPart}, assuming slight")
+                RichPrintWarning(f"Unknown flavor word part: {wordPart}, assuming slight")
                 return -1
             else:
-                print(f"Empty flavor word part, Error")
+                RichPrintError(f"Empty flavor word part, Error")
+                EarlyExit()
                 return -9
     
 def PartToMap(part):
@@ -101,8 +105,8 @@ def NoteAliasesMap(note):
         return "floral"
     if note == "fruity" or note == "fruit":
         return "fruit"
-    if note == "spice" or note == "spicy":
-        return "spice"
+    if note == "spice":
+        return "spicy"
     if note == "woody" or note == "wood":
         return "wood"
     if note == "smoke" or note == "smoky":
@@ -119,6 +123,8 @@ def NoteAliasesMap(note):
         return "bitter"
     if note == "papery":
         return "paper"
+    if note == "warm" or note == "warming":
+        return "heating"
     else:
         return note
     
@@ -151,23 +157,10 @@ def parseReview(reviewString, format):
             GraphScores = part
             
     # Parts Detected:
-    print(f"Parts Detected?: \n\nParams: {params not in ['']}\nWater, Vessel: {waterVessel not in ['']}\nTime: {times not in ['']}\nNotes: {notes not in ['']}\nAttributes: {attrNotes not in ['']}\nSteeping Notes: {SteepNotes not in ['']}\nRemark: {remark not in ['']}\nGraphScores: {GraphScores not in ['']}")
-    print(f"\n----------------------")
-    #params = ReviewParts[1]
-    #waterVessel = ReviewParts[2]
-    #times = ReviewParts[3]
-    #notes = ReviewParts[4]
-    #SteepNotes = ReviewParts[6]
-    #attrNotes = ReviewParts[5]
-    #remark = ReviewParts[7]
-    #if format == "long":
-    #    times = ReviewParts[7]
-    #    notes = ReviewParts[8]
-    #    attrNotes = ReviewParts[9]
-    #    SteepNotes = ReviewParts[13]
-    #    remark = ReviewParts[14]
-
-    print(datetimeVendorTitleType + "\n----------------------")
+    RichPrintInfo(f"Parts Detected?: \n\nParams: {params not in ['']}\nWater, Vessel: {waterVessel not in ['']}\nTime: {times not in ['']}\nNotes: {notes not in ['']}\nAttributes: {attrNotes not in ['']}\nSteeping Notes: {SteepNotes not in ['']}\nRemark: {remark not in ['']}\nGraphScores: {GraphScores not in ['']}")
+    RichPrintSeparator()
+    RichPrintInfo(datetimeVendorTitleType)
+    RichPrintSeparator()
     parts = datetimeVendorTitleType.split(" ")
     # Date
     date = parts[0]
@@ -208,29 +201,32 @@ def parseReview(reviewString, format):
     notesParts = notes.split(", ")
     flavorNotes = {}
     attributeNotes = {}
-    print(f"\nFlavor Notes:")
+    RichPrintInfo(f"Flavor Notes:")
     for part in notesParts:
         
         strength, flavor = PartToMap(part)
         if strength > 0:
             attributeNotes[flavor] = strength
-        else:
+        elif strength < 0:
             flavorNotes[flavor] = strength
-        print(f"Flavor Part: {part} -> Flavor: {flavor} Strength: {strength}")
+        else:
+            RichPrintWarning(f"Ignoring Note: {part} due to 0 strength")
+        RichPrintInfo(f"Flavor Part: {part} -> Flavor: {flavor} Strength: {strength}")
             
     attr = attrNotes.replace("Attributes: ", "")
     attrParts = attr.split(", ")
-    print(f"\nAttribute Notes:")
+    RichPrintSeparator()
+    RichPrintInfo(f"Attribute Notes:")
     for part in attrParts:
         strength, flavor = PartToMap(part)
         if strength > 0:
             attributeNotes[flavor] = strength
         else:
             flavorNotes[flavor] = strength
-        print(f"Attribute Part: {part} -> Flavor: {flavor} Strength: {strength}")
+        RichPrintInfo(f"Attribute Part: {part} -> Flavor: {flavor} Strength: {strength}")
     results["flavorNotes"] = flavorNotes
     results["attributeNotes"] = attributeNotes
-    print(f"\n----------------------")
+    RichPrintSeparator()
     
     # Steeping Notes
     steepNotes = SteepNotes.replace("Steeping Notes:", "")
@@ -243,42 +239,49 @@ def parseReview(reviewString, format):
     # Graph Scores
     #GraphScores: Stamina: 5, Intensity: 5, Occasionality: 5, Rebuy: True, Attempts: 3, Overall: 5, Cost: 0.10, Emojis: [one.png|two.png|three.png]
     if GraphScores not in ['']:
-        print(f"Parsing Graph Scores...")
+        RichPrintInfo(f"Parsing Graph Scores...")
         GraphScores = GraphScores.replace("GraphScores: ", "")
         GraphScoresParts = GraphScores.split(", ")
         for part in GraphScoresParts:
             key, value = part.split(": ")
-            print(f"Key: {key} Value: {value}")
+            #print(f"Key: {key} Value: {value}")
             if key == "Rebuy":
                 results[key] = value.lower() == "true"
-                print(f"Added Rebuy: {results[key]}")
+                RichPrintInfo(f"Added Rebuy: {results[key]}")
             elif key == "Cost":
                 results["CostPerGram"] = float(value)
-                print(f"Added Cost: {results['CostPerGram']}")
+                RichPrintInfo(f"Added Cost: {results['CostPerGram']}")
             elif key == "Emojis":
                 results["emojis"] = value.replace("[", "").replace("]", "").split("|")
-                print(f"Added Emojis: {results['emojis']}")
+                RichPrintInfo(f"Added Emojis: {results['emojis']}")
             elif key == "Attempts":
                 results[key] = int(value)
-                print(f"Added {key}: {results[key]}")
+                RichPrintInfo(f"Added {key}: {results[key]}")
             else:
                 results[key] = float(value)
-                print(f"Added {key} Score: {results[key]}")
+                RichPrintInfo(f"Added {key} Score: {results[key]}")
     
     
     return results
     
     
 reviewString = '''
-10/12/2024 TB 2023 Mojun YiHao Fuzhuan
-Params: 8.2
-Water, Vessel: 99c 90tds zerowater mix, bamboo charcoal, 175mL Big Blue Pot
-Time: 240, 600, 1800, (end)
-Notes: pronounced autumn leaves, pronounced forest, pronounced sticks, hay, juicy, sweet, pronounced malt, earth, dirt
-Attributes: light bitterness, moderate sweetness, light storage, light astringency, light aftertaste, medium-thin viscosity
-GraphScores: StaminaScore: 6.5, IntensityScore: 4.5, OccasionalityScore: 3, Rebuy: True, Attempts: 2, OverallScore: 4.5, Cost: 0.09, Emojis: [fallen_leaf.png|hay.png|beer.png]
+10/15/2024 LP 2006 Maocha Raw
+Params: 9
+Water, Vessel: 90tds zerowater mix, bamboo charcoal, 99C, 130mL NZWH ShuiPing
+---
+Dry: petrichor
+Steamed: petrichor, parsnip, beets
+Wet: petrichor, parsnip, beets, carrots
+Time: 10, 15, 20, 30, 45, 75, 120, 180, 360, (end)
+Notes: pronounced petrichor, dust, dirt, mineral, earth, parsnip, spicy, heating, silky
+Attributes: intense storage, mild sweetness, medium viscosity, medium aftertaste
+Qi? N
+---
+Archetype: Wet Aged Sheng | Petrichor, Dust, Parsnip
+GraphScores: StaminaScore: 9, IntensityScore: 5, OccasionalityScore: 6, Rebuy: False, Attempts: 1, OverallScore: 6, Cost: 0.20, Emojis: [dust.png|parsnip.png|stone.png]
 Steeping Notes:
-Remark: pretty similar profile to A1, but not too weak 
+Remark: very dark, almost purple mark,  carrot-y
 '''.strip()
 reviewJson = ""
 try:
@@ -304,10 +307,10 @@ reviewJson['emojis'] = [
 ]
 '''
 
-print(f"Scores: \n\nCostPerGram: {reviewJson['CostPerGram']}\nStaminaScore: {reviewJson['StaminaScore']}\nIntensityScore: {reviewJson['IntensityScore']}\nOccasionalityScore: {reviewJson['OccasionalityScore']}\nOverallScore: {reviewJson['OverallScore']}\nRebuy: {reviewJson['Rebuy']}\nAttempts: {reviewJson['Attempts']}\nemojis: {reviewJson['emojis']}")
-print(f"\n----------------------")
-print(f"Raw Review: \n\n{reviewJson['RawReview']}")
-print(f"\n----------------------")
+RichPrintInfo(f"Scores: \n\nCostPerGram: {reviewJson['CostPerGram']}\nStaminaScore: {reviewJson['StaminaScore']}\nIntensityScore: {reviewJson['IntensityScore']}\nOccasionalityScore: {reviewJson['OccasionalityScore']}\nOverallScore: {reviewJson['OverallScore']}\nRebuy: {reviewJson['Rebuy']}\nAttempts: {reviewJson['Attempts']}\nemojis: {reviewJson['emojis']}")
+RichPrintSeparator()
+RichPrintInfo(f"Raw Review: \n\n{reviewJson['RawReview']}")
+RichPrintSeparator()
 '''
 example
 {'date': '09/17/2024', 'vendorShort': 'W2T', 'vendorLong': 'White2Tea', 'title': 'Qilan', 'year': '2024', 'type': 'Yancha', 'params': '7', 'waterVessel': '100mL Gaiwan', 'waterVesselVolume': '100', 'steepCount': 2, 'flavorNotes': {'grass': -1, 'berry': -1}, 'attributeNotes': {'roast': 2, 'sweet': 1}}
@@ -323,6 +326,6 @@ jsonPath = f"{jsonPath}/{reviewJson['year']}_{reviewJson['date'].replace('/','_'
 WriteJson(jsonPath, reviewJson)
 
 if os.path.exists(jsonPath):
-    print(f"Success: \n\nSaved to {jsonPath}")
+    RichPrintSuccess(f"Success: \n\nSaved to {jsonPath}")
 else:
-    print(f"Error: \n\nFailed to save to {jsonPath}")
+    RichPrintError(f"Error: \n\nFailed to save to {jsonPath}")
