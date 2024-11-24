@@ -107,18 +107,22 @@ class labelData:
                 "Milk Chocolate": (-1, 1),
                 "Dark Chocolate": (-1, 1),
                 }),
-            "Nutty": (-1, 3, {
+            "Nutty": (-1, 4, {
                  "Sunflower": (-1, 1),
                  "Peanut": (-1, 1),
                  "Betel Nut": (-1, 1),
+                 "Hazelnut": (-1, 1),
                 }),
-            "Sweet": (-1, 6, {
+            "Sweet": (-1, 4, {
                  "Brown Sugar": (-1, 1),
                  "Rock Sugar": (-1, 1),
                  "Honey": (-1, 1), 
-                 "Caramel": (-1, 1),
+                 "Caramel": (-1, 1),         
+                }),
+            "Bakery": (-1, 3, {
                  "Vanilla": (-1, 1),
-                 "Malt": (-1, 1),            
+                 "Malt": (-1, 1),   
+                 "Bread": (-1, 1),          
                 }),
             "Spicy": (-1, 3, {
                 "Ginger": (-1, 1),
@@ -194,16 +198,14 @@ class labelData:
                  "Barbeque": (-1, 1),
                  "Tobacco": (-1, 1),
                 }),
-                
             "Animal": (-1, 2, {
                 "Leather": (-1, 1),
                 "Musk": (-1, 1),
                 }),
         }),
     "Misc Notes": (8, {
-            "Flavored": (-1, 3, {
+            "Flavored": (-1, 2, {
                 "Chenpi": (-1, 1),
-                "Mi Xiang": (-1, 1),
                 "Jasmine": (-1, 1),
                 }),
             "Chemical": (-1, 6, {
@@ -219,7 +221,7 @@ class labelData:
                 "Paper": (-1, 1),
                 }),
             }),
-    "Attributes": (12, {
+    "Attributes": (10, {
         "Bitterness": (-1, 3, {
             "Mild": (-1, 1),
             "Pronounced": (-1, 1),
@@ -230,13 +232,10 @@ class labelData:
             "Pronounced": (-1, 1),
             "Strong": (-1, 1),
             }),
-        "Mouth": (-1, 6, {
-            "Coating": (-1, 1),
+        "Mouth": (-1, 3, {
             "Numbing": (-1, 1),
             "Minty": (-1, 1),
             "Juicy": (-1, 1),
-            "Silky": (-1, 1),
-            "Electric": (-1, 1),
             }),
         "Body": (-1, 2, {
             "Cooling": (-1, 1),
@@ -248,7 +247,7 @@ class labelData:
             "Umami": (-1, 1),
             }),
         }),
-    "Texture": (8, {
+    "Texture": (10, {
         "Viscosity": (-1, 3, {
             "Light": (-1, 1),
             "Medium": (-1, 1),
@@ -264,9 +263,12 @@ class labelData:
             "Intermediate": (-1, 1),
             "Long": (-1, 1),
             }),
-        "Other": (-1, 2, {
+        "Other": (-1, 5, {
             "Powdery": (-1, 1),
             "Drying": (-1, 1),
+            "Silky": (-1, 1),
+            "Syrupy": (-1, 1),
+            "Coating": (-1, 1),
             }),
         }),
     "Processing": (5, {
@@ -447,8 +449,9 @@ def defineRatings():
 
     # Mid Notes
     rating.AddMixedT2T3([[-1], [0, 0, 0, 0]]) #Milky - 'Cream', 'Cocoa', 'Milk Chocolate', 'Dark Chocolate',
-    rating.AddMixedT2T3([[-1], [0,0, 0]]) #Nutty - 'Sunflower', 'Peanut', 'Betel Nut',
-    rating.AddMixedT2T3([[-1], [0,0,0,0,0,0]]) #Sweet - 'Brown Sugar', 'Rock Sugar', 'Honey', 'Caramel', 'Vanilla', 'Malt',
+    rating.AddMixedT2T3([[-1], [0,0,0, 0]]) #Nutty - 'Sunflower', 'Peanut', 'Betel Nut', 'Hazelnut',
+    rating.AddMixedT2T3([[-1], [0,0,0,0]]) #Sweet - 'Brown Sugar', 'Rock Sugar', 'Honey', 'Caramel'
+    rating.AddMixedT2T3([[-1], [0,0,0]]) #Bakery - 'Vanilla', 'Malt', 'Bread',
     rating.AddMixedT2T3([[-1], [0,0,0]]) #Spicy - 'Ginger', 'Clove', 'Cinnamon',
     rating.AddMixedT2T3([[-1], [0,0]]) #Berry - 'Strawberry', 'Raspberry',
     rating.AddMixedT2T3([[-1], [0,0, 0]]) #Fruit - 'Apple', 'Melon', 'Pear',
@@ -465,20 +468,20 @@ def defineRatings():
     rating.AddMixedT2T3([[-1], [0,0,0,0, 0]]) #Wood - 'Pine', 'Mahogony, Resin', 'Cedar', 'Incense',
     rating.AddMixedT2T3([[-1], [0,0,0,0,0,0]]) #Fire - 'Ash', 'Charcoal', 'Pine Smoke', 'Pipe Smoke', 'Barbeque', 'Tobacco',
     rating.AddMixedT2T3([[-1], [0,0]]) #Animal - 'Leather', 'Musk',
-    rating.AddMixedT2T3([[-1], [0,0,0]]) #Flavored - 'Chenpi', 'Mi Xiang', 'Jasmine'
+    rating.AddMixedT2T3([[-1], [0,0]]) #Flavored - 'Chenpi', 'Jasmine'
     rating.AddMixedT2T3([[-1], [0,0,0,0,0,0]]) #Chemical - 'Soap', 'Petrol', 'Camphor', 'Alcohol', 'Sharpness', 'Medicinal',
     rating.AddMixedT2T3([[-1], [0,0]]) #Off-Tastes - 'Wet Pile', 'Paper',
 
     rating.AddMixedT2T3([[-1], [0,0,0]]) #Bitterness - 'Mild', 'Pronounced', 'Heavy',
     rating.AddMixedT2T3([[-1], [0,0,0]]) #Sweetness - 'Mild', 'Pronounced', 'Heavy',
     rating.AddMixedT2T3([[-1], [0,0]]) #Body - 'Cooling', 'Heating',
-    rating.AddMixedT2T3([[-1], [0,0,0, 0, 0, 0]]) #Mouth - 'Coating', 'Numbing', 'Minty', 'Juicy', 'Silky', 'Electric',
+    rating.AddMixedT2T3([[-1], [0,0,0]]) #Mouth - 'Numbing', 'Minty', 'Juicy',
     rating.AddMixedT2T3([[-1], [0,0,0]]) #Other - 'Sour', 'Salty', 'Umami',
 
     rating.AddMixedT2T3([[-1], [0,0,0]]) #Viscosity - 'Light', 'Medium', 'Heavy',
     rating.AddMixedT2T3([[-1], [0,0,0]]) #Astringency - 'Light', 'Medium', 'Heavy',
     rating.AddMixedT2T3([[-1], [0,0, 0]]) #Aftertaste - 'Short', 'Intermediate', 'Long',
-    rating.AddMixedT2T3([[-1], [0,0]]) #Other - 'Powdery', 'Drying',
+    rating.AddMixedT2T3([[-1], [0,0,0,0,0]]) #Other - 'Powdery', 'Drying', 'Silky', 'Syrupy', 'Coating',
 
     rating.AddMixedT2T3([[-1], [0,0,0]]) #Storage - 'Light', 'Medium', 'Heavy',
     rating.AddMixedT2T3([[-1], [0,0,0]]) #Roasting - 'Light', 'Medium', 'Heavy',
@@ -781,7 +784,7 @@ def drawTextOnReview(fullImg, review):
     # Number of attempts
     draw.text((100, 350), f"Attempts: {attempts}", fill="black", font=font)
     # Water Vessel, params
-    draw.text((100, 500), f"{waterVessel} | {gramsTeaUsed}g | {steeps} steeps", fill="black", font=fontSmall)
+    draw.text((100, 500), f"(Brim) {waterVessel} | {gramsTeaUsed}g | {steeps} steeps", fill="black", font=fontSmall)
 
     # Bottom Right block
     # Tea bars for stamina, total score, and checkbox for rebuy?
@@ -815,6 +818,8 @@ def drawTextOnReview(fullImg, review):
             
     # Draw central emoji
     score = getKeyFromDict(review, "OverallScore")
+    if score == None:
+        score = getKeyFromDict(review, "Overall")
     score = ParseToFloat(score)
     if score >= 9.5:
         emoji = f"exploding_head.png"
@@ -855,12 +860,22 @@ def drawBarChart(review):
     # Fixing random state for reproducibility
     np.random.seed(19680801)
 
-    # Example data
     categories = ('Stamina', 'Intensity', 'Occasionality',  'Overall')
-    stamina = review["StaminaScore"]
-    intensity = review["IntensityScore"]
-    occasionality = review["OccasionalityScore"]
-    overall = review["OverallScore"]
+    
+    # Get the scores
+    stamina = getKeyFromDict(review, "StaminaScore")
+    if stamina == None:
+        stamina = getKeyFromDict(review, "Stamina")
+    intensity = getKeyFromDict(review, "IntensityScore")
+    if intensity == None:
+        intensity = getKeyFromDict(review, "Intensity")
+    occasionality = getKeyFromDict(review, "OccasionalityScore")
+    if occasionality == None:
+        occasionality = getKeyFromDict(review, "Occasionality")
+    overall = getKeyFromDict(review, "OverallScore")
+    if overall == None:
+        overall = getKeyFromDict(review, "Overall")
+        
     category_scores = [stamina, intensity, occasionality, overall]
     category_colors = ['r', 'g', 'b', 'y']
     y_pos = np.arange(len(categories))

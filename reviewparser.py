@@ -17,9 +17,9 @@ from helpers import *
 wordsStrNone = ["None", "none", "n/a", "nil", "null", "zero", "0"]
 wordsStr1 = ["slightly", "slight", "hint", "hint of", "light", "watery"]
 wordsStr2 = ["mild", "thin", "short"]
-wordsStr3 = ["moderate", "medium-thin", "medium-short"]
+wordsStr3 = ["moderate", "medium-thin", "medium-short", "medium-light"]
 wordsStr4 = ["pronounced", "medium"]
-wordsStr5 = ["strong", "medium-thick", "medium-long"]
+wordsStr5 = ["strong", "medium-thick", "medium-long", "medium-heavy"]
 wordsStr6 = ["intense", "thick", "long"]
 wordsStr123 = wordsStr1 + wordsStr2 + wordsStr3
 wordsStr456 = wordsStr4 + wordsStr5 + wordsStr6
@@ -64,6 +64,12 @@ def WordPartToStrength(wordPart, isAttribute):
                 return -9
     
 def PartToMap(part):
+    if part == "None" or part == "none" or part == "n/a" or part == "nil" or part == "null" or part == "zero" or part == "0":
+        RichPrintError(f"Part is None: {part}")
+        return (0, "None")
+    if part == None or len(part) == 0:
+        RichPrintError(f"Part is Empty: {part}")
+        return (0, "None")
     # Split the part into the word and the strength
     isAttribute = False
     parts = part.split(" ")
@@ -173,11 +179,14 @@ def parseReview(reviewString, format):
     parts = parts[-1:]
     year = title.split(" ")[0]
     title = title[len(year):].strip()
+    RichPrintInfo(f"Title: {title}, parts: {parts}")
     # type
     teaType = parts[0]
     results["date"] = date
     results["vendorShort"] = vendor
     results["vendorLong"] = vendorShortToLong(vendor)
+    if results["vendorLong"] == "Unknown Vendor":
+        RichPrintError(f"Unknown Vendor: {vendor}")
     results["title"] = title
     results["year"] = year
     results["type"] = typeToTypeMap(teaType)
@@ -219,6 +228,13 @@ def parseReview(reviewString, format):
     RichPrintInfo(f"Attribute Notes:")
     for part in attrParts:
         strength, flavor = PartToMap(part)
+        if len(flavor) == 0:
+            RichPrintError(f"Empty Flavor: {part}")
+            continue
+        if strength == 0:
+            RichPrintError(f"Empty strength: {part}")
+            continue
+            
         if strength > 0:
             attributeNotes[flavor] = strength
         else:
@@ -243,7 +259,12 @@ def parseReview(reviewString, format):
         GraphScores = GraphScores.replace("GraphScores: ", "")
         GraphScoresParts = GraphScores.split(", ")
         for part in GraphScoresParts:
-            key, value = part.split(": ")
+            key, value = None, None
+            try: 
+                key, value = part.split(": ")
+            except:
+                RichPrintError(f"Error: {part}, double check if format is correct")
+                continue
             #print(f"Key: {key} Value: {value}")
             if key == "Rebuy":
                 results[key] = value.lower() == "true"
@@ -266,22 +287,18 @@ def parseReview(reviewString, format):
     
     
 reviewString = '''
-10/15/2024 LP 2006 Maocha Raw
-Params: 9
-Water, Vessel: 90tds zerowater mix, bamboo charcoal, 99C, 130mL NZWH ShuiPing
+10/30/2024 ORT 2015 BaiMuDan White
+Params: 4.8
+Water, Vessel: 99c 90tds zerowater mix, bamboo charcoal, 200mL Glass
 ---
-Dry: petrichor
-Steamed: petrichor, parsnip, beets
-Wet: petrichor, parsnip, beets, carrots
-Time: 10, 15, 20, 30, 45, 75, 120, 180, 360, (end)
-Notes: pronounced petrichor, dust, dirt, mineral, earth, parsnip, spicy, heating, silky
-Attributes: intense storage, mild sweetness, medium viscosity, medium aftertaste
-Qi? N
+Time: 30, 75, 120, 600, (end)
+Notes: fruit, stonefruit, pronounced apricot, floral, cocoa, honey, cherry, moss, mineral, old books
+Attributes:  light astringency, medium-thick viscosity, strong sweetness
 ---
-Archetype: Wet Aged Sheng | Petrichor, Dust, Parsnip
-GraphScores: StaminaScore: 9, IntensityScore: 5, OccasionalityScore: 6, Rebuy: False, Attempts: 1, OverallScore: 6, Cost: 0.20, Emojis: [dust.png|parsnip.png|stone.png]
-Steeping Notes:
-Remark: very dark, almost purple mark,  carrot-y
+GraphScores: StaminaScore: 5, IntensityScore: 6, OccasionalityScore: 6.5, Rebuy: True, Attempts: 3, OverallScore: 8, Cost: 0.55, Emojis: [peach.png|tumbler_glass.png|dust.png]
+Archetype: Aged White | Apricot, Honey, Old Books
+Steeping Notes: last of sample, a bit too light
+Remark: banger tea, gold medal aged white 
 '''.strip()
 reviewJson = ""
 try:
@@ -307,7 +324,11 @@ reviewJson['emojis'] = [
 ]
 '''
 
-RichPrintInfo(f"Scores: \n\nCostPerGram: {reviewJson['CostPerGram']}\nStaminaScore: {reviewJson['StaminaScore']}\nIntensityScore: {reviewJson['IntensityScore']}\nOccasionalityScore: {reviewJson['OccasionalityScore']}\nOverallScore: {reviewJson['OverallScore']}\nRebuy: {reviewJson['Rebuy']}\nAttempts: {reviewJson['Attempts']}\nemojis: {reviewJson['emojis']}")
+# Check if Xscore exists, if not, use X
+if keyExistsInDict(reviewJson, "StaminaScore"):
+    RichPrintInfo(f"Scores: \n\nCostPerGram: {reviewJson['CostPerGram']}\nStaminaScore: {reviewJson['StaminaScore']}\nIntensityScore: {reviewJson['IntensityScore']}\nOccasionalityScore: {reviewJson['OccasionalityScore']}\nOverallScore: {reviewJson['OverallScore']}\nRebuy: {reviewJson['Rebuy']}\nAttempts: {reviewJson['Attempts']}\nemojis: {reviewJson['emojis']}")
+else:
+    RichPrintWarning(f"Scores: \n\nCostPerGram: {reviewJson['CostPerGram']}\nStaminaScore: {reviewJson['Stamina']}\nIntensityScore: {reviewJson['Intensity']}\nOccasionalityScore: {reviewJson['Occasionality']}\nOverallScore: {reviewJson['Overall']}\nRebuy: {reviewJson['Rebuy']}\nAttempts: {reviewJson['Attempts']}\nemojis: {reviewJson['emojis']}")
 RichPrintSeparator()
 RichPrintInfo(f"Raw Review: \n\n{reviewJson['RawReview']}")
 RichPrintSeparator()

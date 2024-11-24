@@ -8,7 +8,7 @@ useRichOutputColors = True # pip install rich to use this
 
 A4PaperSizeWidthPx = 2550
 A4PaperSizeHeightPx = 3300
-Version = "v3.3.6"
+Version = "v3.6.0"
 
 FolderData = "./data"
 FolderJson = "./data/json"
@@ -18,6 +18,7 @@ FolderStatic = "./data/static"
 
 
 class VendorsEnum(Enum):
+    Unknown = 0
     LiquidProust = 1
     YunnanSourcing = 2
     White2Tea = 3
@@ -30,7 +31,10 @@ class VendorsEnum(Enum):
     TeaHong = 10
     FarmerLeaf = 11
     Taobao = 12
-    Unknown = 13
+    BaoHongYinJi = 13
+    OneRiverTea = 14
+    NewYorkTeaSociety = 15
+    
     
 def VendorToEnum(vendor):
     return VendorsEnum[vendor]
@@ -59,6 +63,12 @@ def VendorEnumToString(vendor):
         return "Farmer Leaf"
     elif vendor == VendorsEnum.Taobao:
         return "Taobao"
+    elif vendor == VendorsEnum.BaoHongYinJi:
+        return "Bao Hong Yin Ji"
+    elif vendor == VendorsEnum.OneRiverTea:
+        return "One River Tea"
+    elif vendor == VendorsEnum.NewYorkTeaSociety:
+        return "New York Tea Society"
     else:
         return "Unknown Vendor"
 
@@ -85,6 +95,7 @@ class TeaTypeEnum(Enum):
     QingZhuan = 20
     HuaZhuan = 21
     YiJuan = 22
+    DeathRoast = 23
     
 def TeaTypeToEnum(teaType):
     teaType = teaType.strip().title()
@@ -145,6 +156,8 @@ def TeaTypeEnumToColor(teaType):
         return (50, 50, 255)
     elif teaType == TeaTypeEnum.YiJuan:
         return (255, 50, 50)
+    elif teaType == TeaTypeEnum.DeathRoast:
+        return (255, 50, 255)
     else:
         print(f"Unknown tea type {teaType}")
         return (0, 0, 0)
@@ -174,6 +187,12 @@ def vendorShortToLong(vendorShort):
         return "Farmer Leaf"
     elif vendorShort == "TB":
         return "Taobao"
+    elif vendorShort == "BHYJ":
+        return "Bao Hong Yin Ji"
+    elif vendorShort == "ORT":
+        return "One River Tea"
+    elif vendorShort == "NYTS":
+        return "New York Tea Society"
     else:
         return "Unknown Vendor"
 def typeToTypeMap(teaType):
@@ -190,18 +209,25 @@ def getKeyFromDict(dict, key):
     try:
         return dict[key]
     except:
-        print(f"Key {key} not found in dict, Please check manually")
+        RichPrintError(f"Key {key} not found in dict, Please check manually")
         return None
+    
+def keyExistsInDict(dict, key):
+    try:
+        dict[key]
+        return True
+    except:
+        return False
 def ParseToFloat(value):
     try:
         return float(value)
     except:
-        print(f"Could not parse {value} to float")
+        RichPrintError(f"Could not parse {value} to float")
 def ParseToInt(value):
     try:
         return int(value)
     except:
-        print(f"Could not parse {value} to int")
+        RichPrintError(f"Could not parse {value} to int")
     
     
 # Os Operations
