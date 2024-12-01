@@ -8,7 +8,7 @@ useRichOutputColors = True # pip install rich to use this
 
 A4PaperSizeWidthPx = 2550
 A4PaperSizeHeightPx = 3300
-Version = "v3.6.0"
+Version = "v3.6.1"
 
 FolderData = "./data"
 FolderJson = "./data/json"
@@ -34,6 +34,7 @@ class VendorsEnum(Enum):
     BaoHongYinJi = 13
     OneRiverTea = 14
     NewYorkTeaSociety = 15
+    TheSweetestDew = 16
     
     
 def VendorToEnum(vendor):
@@ -69,6 +70,8 @@ def VendorEnumToString(vendor):
         return "One River Tea"
     elif vendor == VendorsEnum.NewYorkTeaSociety:
         return "New York Tea Society"
+    elif vendor == VendorsEnum.TheSweetestDew:
+        return "The Sweetest Dew"
     else:
         return "Unknown Vendor"
 
@@ -96,17 +99,21 @@ class TeaTypeEnum(Enum):
     HuaZhuan = 21
     YiJuan = 22
     DeathRoast = 23
+    TianJian = 24
     
-def TeaTypeToEnum(teaType):
-    teaType = teaType.strip().title()
+def TeaTypeToEnum(teaType: str):
+    teaType = teaType.strip().title().replace(" ", "")
     if teaType == "Raw":
         return TeaTypeEnum.Sheng
     elif teaType == "Ripe":
         return TeaTypeEnum.Shou
+    elif teaType == "Hong":
+        return TeaTypeEnum.Black
+    
     try:
         return TeaTypeEnum[teaType]
     except:
-        print(f"Unknown tea type {teaType}")
+        print(f"Unknown tea type \"{teaType}\" of type {type(teaType)}")
         return TeaTypeEnum.Black
 
 def TeaTypeEnumToColor(teaType):
@@ -158,43 +165,36 @@ def TeaTypeEnumToColor(teaType):
         return (255, 50, 50)
     elif teaType == TeaTypeEnum.DeathRoast:
         return (255, 50, 255)
+    elif teaType == TeaTypeEnum.TianJian:
+        return (50, 255, 255)
     else:
         print(f"Unknown tea type {teaType}")
         return (0, 0, 0)
     
 def vendorShortToLong(vendorShort):
-    if vendorShort == "LP":
-        return "Liquid Proust"
-    elif vendorShort == "YS":
-        return "Yunnan Sourcing"
-    elif vendorShort == "W2T":
-        return "White2Tea"
-    elif vendorShort == "BLT":
-        return "Bitterleaf Teas"
-    elif vendorShort == "CLT":
-        return "Crimson Lotus Tea"
-    elif vendorShort == "TWL":
-        return "TeasWeLike"
-    elif vendorShort == "TYT":
-        return "TaiYangTeas"
-    elif vendorShort == "TSR":
-        return "The Steeping Room"
-    elif vendorShort == "YTC":
-        return "Yeeon Tea Co"
-    elif vendorShort == "TH":
-        return "Tea Hong"
-    elif vendorShort == "FL":
-        return "Farmer Leaf"
-    elif vendorShort == "TB":
-        return "Taobao"
-    elif vendorShort == "BHYJ":
-        return "Bao Hong Yin Ji"
-    elif vendorShort == "ORT":
-        return "One River Tea"
-    elif vendorShort == "NYTS":
-        return "New York Tea Society"
-    else:
+    vendorShortToLongDict = {
+        "LP": "Liquid Proust",
+        "YS": "Yunnan Sourcing",
+        "W2T": "White2Tea",
+        "BLT": "Bitterleaf Teas",
+        "CLT": "Crimson Lotus Tea",
+        "TWL": "TeasWeLike",
+        "TYT": "TaiYangTeas",
+        "TSR": "The Steeping Room",
+        "YTC": "Yeeon Tea Co",
+        "TH": "Tea Hong",
+        "FL": "Farmer Leaf",
+        "TB": "Taobao",
+        "BHYJ": "Bao Hong Yin Ji",
+        "ORT": "One River Tea",
+        "NYTS": "New York Tea Society",
+        "TSD": "The Sweetest Dew"
+    }
+    try:
+        return vendorShortToLongDict[vendorShort]
+    except:
         return "Unknown Vendor"
+    
 def typeToTypeMap(teaType):
     teaType = teaType.strip().title()
     if teaType == "Raw":

@@ -500,7 +500,8 @@ def TryGetFromDict(d, key):
     try:
         return d[key]
     except:
-        return None
+        RichPrintWarning(f"Key {key} not found in dictionary, assuming 0")
+        return 0
 def ParseAttribute(pairData, attribute, Tags=["Light", "Medium", "Heavy"], OccuranceOnPie=0):
     returnVal = None
     idx = 0
@@ -517,6 +518,9 @@ def ParseAttribute(pairData, attribute, Tags=["Light", "Medium", "Heavy"], Occur
             attribute = attribute - 4
             idx = [i for i, n in enumerate(pairData) if n[0] == Tags[2]][OccuranceOnPie]
             returnVal = (Tags[2], attribute)
+    else:
+        RichPrintWarning(f"Attribute {attribute} not found")
+        return None, None
     return idx, returnVal
 
 def drawPie(ld: labelData, rating:Rating, review: dict):
@@ -596,7 +600,7 @@ def drawPie(ld: labelData, rating:Rating, review: dict):
         idx2 = [i for i, n in enumerate(pairedDataT2) if n[0] == "Astringency"][0]
         pairedDataT2[idx2] = (pairedDataT2[idx2][0], 1)
         RichPrintInfo(f"Matched astringency to {val}")
-    idx, val = ParseAttribute(pairedDataT3, TryGetFromDict(attributeNotes, "aftertaste"), ["Short", "Long"], 0)
+    idx, val = ParseAttribute(pairedDataT3, TryGetFromDict(attributeNotes, "aftertaste"), ["Short", "Intermediate", "Long"], 0)
     if idx != None and val != None:
         pairedDataT3[idx] = val
         idx2 = [i for i, n in enumerate(pairedDataT2) if n[0] == "Aftertaste"][0]
@@ -702,7 +706,7 @@ def drawTextOnReview(fullImg, review):
     draw = ImageDraw.Draw(fullImg)
     draw.line((0, 600, 2550, 600), fill=128)
     draw.line((0, 2600, 2550, 2600), fill=128)
-    draw.line((950, 0, 950, 600), fill=128)
+    draw.line((1100, 0, 1100, 600), fill=128)
 
     #draw text
     # Title (Placeholder)
@@ -713,14 +717,14 @@ def drawTextOnReview(fullImg, review):
     fontLarge = PIL.ImageFont.truetype("arial", fontSizeLarge)
     fontSmall = PIL.ImageFont.truetype("arial", fontSizeSmall)
     #Top right block
-    draw.text((1000, 100), f"Tea Profiler {Version}", fill="black", font=fontLarge)
-    draw.text((1000, 200), "Rex Wang, Python", fill="black", font=fontSmall)
+    draw.text((1150, 100), f"Tea Profiler {Version}", fill="black", font=fontLarge)
+    draw.text((1150, 200), "Rex Wang, Python", fill="black", font=fontSmall)
     # Notes
     #draw.text((1100, 300), f"Notes: Placeholder", fill="black", font=font)
     steepNotes = review["steepNotes"]
     if steepNotes.strip() == "":
         steepNotes = "None"
-    draw.text((1000, 275), f"Steeping Notes: {steepNotes}", fill="black", font=font)
+    draw.text((1150, 275), f"Steeping Notes: {steepNotes}", fill="black", font=font)
     remark = review["remark"]
     RichPrintInfo(f"{remark}")
     # break into multiple lines if necessary
@@ -747,13 +751,13 @@ def drawTextOnReview(fullImg, review):
             else:
                 remarkLine2 += word + " "
         remark = remarkLine1 + "\n" + remarkLine2
-    draw.text((1000, 350), f"{remark}", fill="black", font=font)
+    draw.text((1150, 350), f"{remark}", fill="black", font=font)
 
     # Get numbers and variables
     year = getKeyFromDict(review, "year")
     teaTitle = getKeyFromDict(review, "title")
     teaType = getKeyFromDict(review, "type")
-    teaType = teaType.title()
+    teaType = str(teaType.title())
     teaTypeEnum = TeaTypeToEnum(teaType)
     vendor = getKeyFromDict(review, "vendorLong")
     teaCost = getKeyFromDict(review, "CostPerGram")

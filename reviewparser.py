@@ -131,6 +131,8 @@ def NoteAliasesMap(note):
         return "paper"
     if note == "warm" or note == "warming":
         return "heating"
+    if note == "malty":
+        return "malt"
     else:
         return note
     
@@ -175,13 +177,16 @@ def parseReview(reviewString, format):
     vendor = parts[0]
     parts = parts[1:]
     # title
-    title = " ".join(parts[:-1])
-    parts = parts[-1:]
+    teaTypeSize = 1
+    if parts[-1] == "Jian":
+        teaTypeSize = 2
+    title = " ".join(parts[:-teaTypeSize])
+    parts = parts[-teaTypeSize:]
     year = title.split(" ")[0]
     title = title[len(year):].strip()
     RichPrintInfo(f"Title: {title}, parts: {parts}")
     # type
-    teaType = parts[0]
+    teaType = " ".join(parts)
     results["date"] = date
     results["vendorShort"] = vendor
     results["vendorLong"] = vendorShortToLong(vendor)
@@ -190,6 +195,7 @@ def parseReview(reviewString, format):
     results["title"] = title
     results["year"] = year
     results["type"] = typeToTypeMap(teaType)
+    RichPrintInfo(f"Type: {results['type']}")
 
     params = params.replace("Params: ", "")
     results["params"] = params
@@ -287,18 +293,18 @@ def parseReview(reviewString, format):
     
     
 reviewString = '''
-10/30/2024 ORT 2015 BaiMuDan White
-Params: 4.8
-Water, Vessel: 99c 90tds zerowater mix, bamboo charcoal, 200mL Glass
+10/30/2024 YS 2011 BSX Basket Tian Jian
+Params: 6
+Water, Vessel: 99c 90tds zerowater mix, bamboo charcoal, 160mL Pumpkin
 ---
-Time: 30, 75, 120, 600, (end)
-Notes: fruit, stonefruit, pronounced apricot, floral, cocoa, honey, cherry, moss, mineral, old books
-Attributes:  light astringency, medium-thick viscosity, strong sweetness
+Time: 120, 240, 600, (end)
+Notes: ash, brown sugar, wood, tobacco, mushroom, juicy, pipe smoke, malt
+Attributes: moderate bitterness, medium-thin viscosity, mild roast, medium-long aftertaste, moderate storage, mild sweetness
 ---
-GraphScores: StaminaScore: 5, IntensityScore: 6, OccasionalityScore: 6.5, Rebuy: True, Attempts: 3, OverallScore: 8, Cost: 0.55, Emojis: [peach.png|tumbler_glass.png|dust.png]
-Archetype: Aged White | Apricot, Honey, Old Books
-Steeping Notes: last of sample, a bit too light
-Remark: banger tea, gold medal aged white 
+GraphScores: StaminaScore: 4, IntensityScore: 4, OccasionalityScore: 7, Rebuy: True, Attempts: 1, OverallScore: 7, Cost: 0.19, Emojis: [smoking.png|mushroom.png|fire.png]
+Archetype: San Jian | Ash, Mushroom, Pipe Smoke
+Steeping Notes: tad light, go up to 8g
+Remark: standout heicha, interesting notes, a tad pricy, well worth a sample
 '''.strip()
 reviewJson = ""
 try:
@@ -330,8 +336,8 @@ if keyExistsInDict(reviewJson, "StaminaScore"):
 else:
     RichPrintWarning(f"Scores: \n\nCostPerGram: {reviewJson['CostPerGram']}\nStaminaScore: {reviewJson['Stamina']}\nIntensityScore: {reviewJson['Intensity']}\nOccasionalityScore: {reviewJson['Occasionality']}\nOverallScore: {reviewJson['Overall']}\nRebuy: {reviewJson['Rebuy']}\nAttempts: {reviewJson['Attempts']}\nemojis: {reviewJson['emojis']}")
 RichPrintSeparator()
-RichPrintInfo(f"Raw Review: \n\n{reviewJson['RawReview']}")
-RichPrintSeparator()
+#RichPrintInfo(f"Raw Review: \n\n{reviewJson['RawReview']}")
+#RichPrintSeparator()
 '''
 example
 {'date': '09/17/2024', 'vendorShort': 'W2T', 'vendorLong': 'White2Tea', 'title': 'Qilan', 'year': '2024', 'type': 'Yancha', 'params': '7', 'waterVessel': '100mL Gaiwan', 'waterVesselVolume': '100', 'steepCount': 2, 'flavorNotes': {'grass': -1, 'berry': -1}, 'attributeNotes': {'roast': 2, 'sweet': 1}}
